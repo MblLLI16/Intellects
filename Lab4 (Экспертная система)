@@ -1,200 +1,58 @@
 ; ===================================================
-; Экспертная система на примере программы-переводчика кода Морзе 
+; Экспертная система при помощи нескольких вопросов опредеяет, какой из видов боевых искусств был выбран человеком 
 ; ===================================================
 
-(deftemplate conversion 
-	(slot character) 
-	(multislot morse-code))
-
-(deffacts conversions
-	(conversion (character A) (morse-code * -))
-	(conversion (character B) (morse-code - * * *))
-	(conversion (character C) (morse-code - * - *))
-	(conversion (character D) (morse-code - * *))
-	(conversion (character E) (morse-code *))
-	(conversion (character F) (morse-code * * - *))
-	(conversion (character G) (morse-code - - *))
-	(conversion (character H) (morse-code * * * *))
-	(conversion (character I) (morse-code * *))
-	(conversion (character J) (morse-code * - - -))
-	(conversion (character K) (morse-code - * -))
-	(conversion (character L) (morse-code * - * *))
-	(conversion (character M) (morse-code - -))
-	(conversion (character N) (morse-code - *))
-	(conversion (character O) (morse-code - - -))
-	(conversion (character P) (morse-code * - - *))
-	(conversion (character Q) (morse-code - - * -))
-	(conversion (character R) (morse-code * - *))
-	(conversion (character S) (morse-code * * *))
-	(conversion (character T) (morse-code -))
-	(conversion (character U) (morse-code * * -))
-	(conversion (character V) (morse-code * * * -))
-	(conversion (character W) (morse-code * - -))
-	(conversion (character X) (morse-code - * * -))
-	(conversion (character Y) (morse-code - * - -))
-	(conversion (character Z) (morse-code - - * *)))
-	
-(defrule start
-=>
-(assert (phase start)))
-
-(defrule enter-message
-?phase <- (phase start)
-=>
-(retract ?phase)
-(assert (phase start))
-(printout t crlf "Enter a message (<CR> to end): ")
-(assert (message (explode$ (readline))/)))
-
-
-(defrule enter-message2
-?phase <- (phase start)
-=>
-(retract ?phase)
-(printout t crlf "Enter a message (<CR> to end): ")
-(assert (message (explode$ (readline))/)))
-
-
-(defrule end
-(message /)
-?phase <- (phase start)
-=>
-(retract ?phase))
-
-
-(defrule translate
-?message <- (message $?x / $?rest)
-(conversion (character ?letter) (morse-code $?x))
-=>
-(retract ?message)
-(assert (rest $?rest))
-(printout t "The message is " ?letter " " ))
-
-
-
-(defrule translate2
-?message <- (message $?x / $?rest)
-(conversion (character ?letter) (morse-code $?x))
-=>
-(retract ?message)
-(assert (message $?rest))
-(assert (rest $?x)))
-
-
-(defrule translate3
-?message <- (message $?x / $?rest)
-?letter <- (letter $?l)
-(conversion (character ?letter) (morse-code $?x))
-=>
-(retract ?message ?letter)
-(assert (message $?rest))
-(assert (letter $?l ?letter)))
-
-
-(defrule translate4
-?message <- (message $?x / $?rest)
-?letter <- (letter $?l)
-(conversion (character ?letter) (morse-code $?x))
-=>
-(retract ?message ?letter)
-(assert (message $?rest))
-(assert (letter $?l ?letter))
-(assert (phase print)))
-
-(defrule translate5
-?message <- (message $?x / $?rest)
-?ltr <- (letter $?l)
-(conversion (character ?letter) (morse-code $?x))
-=>
-(retract ?message ?ltr)
-(assert (message $?rest))
-(assert (letter $?l ?letter))
-(assert (phase print)))
-
-
-
-(defrule rest
-?message <- (rest $?x / $?rest)
-(conversion (character ?letter) (morse-code $?x))
-=>
-(retract ?message)
-(assert (rest $?rest))
-(printout t ?letter " " ))
-
-
-(defrule rest2
-?letters <- (letter $?x)
-?phase <- (phase print)
-=>
-(retract ?letters ?phase)
-(printout t "The message is: " $?x ))
-
-
-(defrule rest3
-?letters <- (letter $?x)
-?phase <- (phase print)
-=>
-(retract ?letters ?phase)
-(assert (phase start))
-(printout t "The message is: " $?x ))
-
-
-(defrule rest4
-?letters <- (letter $?x)
-?msg <- (message)
-=>
-(retract ?letters ?msg)
-(assert (phase start))
-(printout t "The message is: " (implode$ ?x) ))
-
-(defrule bad-message1
-(conversion (morse-code $?y))
-(not (or (message $?y)
-(message /)
-(rest $?y /)))
-?message <- (message $?x)
-=>
-(retract ?message)
-(assert (phase start))
-(printout t "Can't decode this message." ))
-
-
-(defrule bad-message2
-(conversion (morse-code $?y))
-(not (and (or (message $?y)
-(message /)
-(rest $?y /))))
-(or ?message <- (message $?x)
-?message <- (rest $?x))
-=>
-(retract ?message)
-(assert (phase start))
-(printout t "Can't decode this message." ))
-
-
-(defrule bad-message3
-(conversion (morse-code $?y))
-(not (and (or (message $?y)(message /)(rest $?y /)(rest))))
-(or ?message <- (message $?x)
-?message <- (rest $?x))
-=>
-(retract ?message)
-(assert (phase start))
-(printout t "Can't decode this message." ))
-
-
-(defrule bad-message4
-(conversion (morse-code $?y))
-(not (and (or (message $?y)
-(message /))))
-?message <- (message $?x)
-=>
-(retract ?message)
-(assert (phase start))
-(printout t "Can't decode this message." ))
-
-
-(defrule del
-?rest <- (rest)
-=>
-(retract ?rest))
+%trace 
+domains
+  x=string
+database
+  xpositive(x)
+  xnegative(x)
+  otvety(x,x)
+predicates
+  fighting(x)
+  positive(x)
+  negative(x)
+  ask(x,x)
+  remember(x,x)
+  write_result(x)
+  w_r(x)
+  dalshe
+clauses
+  fighting("Самбо"):-    positive("Бросковая техника"),
+                         positive("Борьба в партере"),
+                         positive("Болевые приемы"),
+                         negative("Удушающие приемы").
+  fighting("Дзю-до"):-   positive("Бросковая техника"),
+                         positive("Болевые приемы"),
+                         positive("Борьба в партере"),
+                         positive("Удушающие приемы").
+  fighting("Бокс"):-     negative("Бросковая техника"),
+                         positive("Техника ударов руками"),
+                         negative("Техника ударов ногами").
+  fighting("Каратэ"):-   negative("Бросковая техника"),
+                         positive("Техника ударов руками"),
+                         positive("Техника ударов ногами").
+  fighting("Айкидо"):-   positive("Бросковая техника"),
+                         negative("Борьба в партере"),
+                         positive("Болевые приемы"),
+                         negative("Удушающие приемы").
+  positive(X):-xpositive(X),!;
+               xnegative(X),!,fail;
+               ask(X,"Да"),!;
+               xpositive(X),!.             
+  negative(X):-xnegative(X),!;
+               xpositive(X),!,fail;
+               ask(X,"Нет"),!;
+               xnegative(X),!.
+  ask(X,R):-write(X,":"),readln(Reply),remember(X,Reply),R=Reply.
+  remember(X,"Да"):-assert(xpositive(X)),assert(otvety(X,"Да")),!.
+  remember(X,"Нет"):-assert(xnegative(X)),assert(otvety(X,"Нет")),!.
+  remember(X,_):-assert(xpositive(X)),assert(xnegative(X)),assert(otvety(X,"Незнаю!!!")).
+  write_result(X):-w_r(X).
+  write_result(_).
+  w_r(X):-nl,nl,write("Скорее всего это ",X),
+         nl,write("Потому что:"),!,otvety(X1,X2),nl,write(X1,"->",X2),fail.                                                
+  dalshe:-nl,write("Работать дальше?"),readln(X),X<>"Да".
+goal
+  clearwindow,retractall(_),!,fighting(X),write_result(X),dalshe.
