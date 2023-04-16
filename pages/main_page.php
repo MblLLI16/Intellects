@@ -55,15 +55,15 @@
             <span>Документы:</span>
         </div>
         <div class="row">
-            <button type="submit" class="btn btn-primary mt-3 custom-btn" id="create-doc-btn-tickets-sold-monthly">Билеты,
+            <button type="submit" class="btn btn-primary mt-3 custom-btn-doc" id="create-doc-btn-tickets-sold-monthly">Билеты,
                 проданные за n месяц n компанией</button>
         </div>
         <div class="row">
-            <button type="submit" class="btn btn-primary mt-3 custom-btn" id="create-doc-btn-tickets-sales-by-airline">Сумма продаж
+            <button type="submit" class="btn btn-primary mt-3 custom-btn-doc" id="create-doc-btn-tickets-sales-by-airline">Сумма продаж
                 билетов каждой компании</button>
         </div>
         <div class="row">
-            <button type="submit" class="btn btn-primary mt-3 custom-btn" id="create-doc-btn-airline-clients-by-date">Список
+            <button type="submit" class="btn btn-primary mt-3 custom-btn-doc" id="create-doc-btn-airline-clients-by-date">Список
                 клиентов авиакомпаний за n дату</button>
         </div>
 
