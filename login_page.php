@@ -12,29 +12,28 @@
 </head>
 
 <body>
-    <div class="form">
-        <div class="heading">
-            <span><strong>Login to Ticket sales Db</strong></span>
-        </div>
-        <div class="elements">
-            <div class="form-group">
-                <input type="text" class="form-control" id="eventName1" name="eventName1" placeholder="Email" required>
+    <form method="POST" action="login.php">
+        <div class="form">
+            <div class="heading">
+                <span><strong>Login to Ticket sales Db</strong></span>
             </div>
-            <div class="form-group">
-                <input type="text" class="form-control" id="eventName2" name="eventName2" placeholder="Password"
-                    required>
+            <div class="elements">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="eventName1" name="email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="eventName2" name="password" placeholder="Password" required>
+                </div>
+            </div>
+            <div class="row">
+                <button type="submit" class="btn btn-primary mt-3" id="create-event-btn">Tap to Login</button>
             </div>
         </div>
-        <div class="heading">
-            <span>Or</span>
-        </div>
-        <div class="row">
-            <button class="btn btn-primary mt-3" id="create-event-btn">Tap to Sign up</button>
-        </div>
-    </div>
+    </form>
 
-    <script src="script.js"></script>
+    <!-- <script src="script.js"></script> -->
 
 </body>
+
 
 </html>
