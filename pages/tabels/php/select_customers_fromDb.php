@@ -5,6 +5,8 @@ $username = "root";
 $password = "";
 $dbname = "ticketsalesdb";
 
+
+
 $conn = mysqli_connect($servername, $username, $password, $dbname);
 
 // Check if the connection was successful
@@ -27,12 +29,16 @@ if (!$result) {
     die("Error: " . mysqli_error($conn));
 }
 
-echo "<table>";
-echo "<tr><th>Client ID</th><th>Passport Number</th><th>Last Name</th><th>First Name</th><th>Patronymic</th><th>Action</th><th>Action</th></tr>";
-while ($row = mysqli_fetch_assoc($result)) {
-    echo "<tr><td>" . $row["ClientID"] . "</td><td>" . $row["passport_number"] . "</td><td>" . $row["last_name"] . "</td><td>" . $row["first_name"] . "</td><td>" . $row["patronymic"] . "</td><td><button onclick='deleteRow(" . $row["ClientID"] . ")'>Delete</button></td> <td><button onclick='updateRow(" . $row["ClientID"] . ")'>Update</button></td> </tr>";
+$data = array();
+while($row = mysqli_fetch_assoc($result)) {
+    $data[] = $row;
 }
-echo "</table>";
+
+header('Content-Type: application/json');
+echo json_encode($data);
+mysqli_close($conn);
+
+
 
 
 ?>

@@ -19,12 +19,28 @@
         </div>
 
         <div class="table">
-            <?php include './php/select_customers_fromDb.php' ?>
+            <table id="customersTable">
+                <thead>
+                    <tr>
+                        <th>Client ID</th>
+                        <th>Passport Number</th>
+                        <th>Last Name</th>
+                        <th>First Name</th>
+                        <th>Patronymic</th>
+                        <th>Action</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
         </div>
 
         <div class="container">
             <div class="row">
                 <button type="submit" class="btn btn-primary mt-3 custom-btn"
+                    onclick='insertRow($("#eventName1").val(), $("#eventName2").val(), $("#eventName3").val(), $("#eventName4").val())'
                     id="create-event-btn-cash">Добавить</button>
             </div>
         </div>
@@ -50,6 +66,22 @@
     </div>
 
     <script>
+        $(document).ready(function () {
+            // Load the data from the server and populate the table
+            $.ajax({
+                url: "./php/select_customers_fromDb.php",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data, function (index, item) {
+                        var row = $("<tr><td>" + item.ClientID + "</td><td>" + item.passport_number + "</td><td>" + item.last_name + "</td><td>" + item.first_name + "</td><td>" + item.patronymic + "</td><td><button onclick='deleteRow(" + item.ClientID + ")'>Delete</button></td> <td><button onclick='updRow(" + item.ClientID + ")'>Update</button></td></tr>");
+                        $("#customersTable tbody").append(row);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
         function deleteRow(ClientID) {
             // Send an AJAX request to the delete.php script
             $.ajax({
@@ -65,12 +97,47 @@
                 }
             });
         }
-        function updRow(ClientID, passport_number, last_name, first_name, patronymic) {
-            // Send an AJAX request to the delete.php script
+        function updRow(ClientID) {
+            // Get the values of the input fields
+            var passport_number = $("input[name='passport_number']").val();
+            var last_name = $("input[name='last_name']").val();
+            var first_name = $("input[name='first_name']").val();
+            var patronymic = $("input[name='patronymic']").val();
+
+            // Send an AJAX request to the upd_customers.php script
+            console.log("Updating row with ClientID " + ClientID);
             $.ajax({
                 url: "./php/upd_customers.php",
                 method: "POST",
-                data: { ClientID: ClientID },
+                data: {
+                    ClientID: ClientID,
+                    passport_number: passport_number,
+                    last_name: last_name,
+                    first_name: first_name,
+                    patronymic: patronymic
+                },
+                success: function (response) {
+                    // Reload the table after the row is updated
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+
+        function insertRow(passport_number, last_name, first_name, patronymic) {
+            // Send an AJAX request to the delete.php script
+            $.ajax({
+                url: "./php/ins_customers.php",
+                method: "POST",
+                data: {
+                    passport_number: passport_number,
+                    last_name: last_name,
+                    first_name: first_name,
+                    patronymic: patronymic
+                },
                 success: function (response) {
                     // Reload the table after the row is deleted
                     location.reload();
