@@ -38,7 +38,7 @@
         <div class="container">
             <div class="row">
                 <button type="submit" class="btn btn-primary mt-3 custom-btn"
-                    onclick='insertRow($("#eventName1").val(), $("#eventName2").val()'
+                    onclick='insertRow($("#eventName1").val(), $("#eventName2").val())'
                     id="create-event-btn-cash">Добавить</button>
             </div>
         </div>
@@ -62,9 +62,10 @@
                 dataType: "json",
                 success: function (data) {
                     $.each(data, function (index, item) {
-                        var row = $("<tr><td>" + item.Name + "</td><td>" + item.Address + "</td><td><button onclick='deleteRow(" + item.ID + ")'>Delete</button></td> <td><button onclick='updRow(" + item.ID + ")'>Update</button></td></tr>");
+                        var row = $("<tr><td>" + item.ID + "</td><td>" + item.Name + "</td><td>" + item.Address + "</td><td><button onclick='deleteRow(" + item.ID + ")'>Delete</button></td> <td><button onclick='updRow(" + item.ID + ")'>Update</button></td></tr>");
                         $("#airlineTable tbody").append(row);
                     });
+
                 },
                 error: function (xhr, status, error) {
                     console.error(xhr.responseText);
@@ -74,7 +75,7 @@
         function deleteRow(ID) {
             // Send an AJAX request to the delete.php script
             $.ajax({
-                url: "./php/del_customers.php",
+                url: "./php/del_airlines.php",
                 method: "POST",
                 data: { ID: ID },
                 success: function (response) {
@@ -87,8 +88,8 @@
             });
         }
         function updRow(id) {
-            var name = $("input[name='name']").val();
-            var address = $("input[name='address']").val();
+            var name = $("input[name='airline_name']").val();
+            var address = $("input[name='airline_address']").val();
             if (checkInpt(name, address) === true) {
                 console.log("Updating row with ID " + id);
                 $.ajax({
@@ -117,7 +118,7 @@
             if (checkInpt(name, address)) {
                 // Send an AJAX request to the ins_airline.php script
                 $.ajax({
-                    url: "./php/ins_airline.php",
+                    url: "./php/ins_airlines.php",
                     method: "POST",
                     data: {
                         name: name,
@@ -131,6 +132,8 @@
                         console.error(xhr.responseText);
                     }
                 });
+            } else {
+                $("#error-message").text("Введите корректные значения.")
             }
         }
 

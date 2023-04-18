@@ -152,6 +152,8 @@
                         console.error(xhr.responseText);
                     }
                 });
+            } else {
+                $("#error-message").text("Введите корректные значения.")
             }
         }
 
