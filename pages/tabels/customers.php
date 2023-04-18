@@ -45,9 +45,10 @@
             </div>
         </div>
         <div class="elements">
+        <div class="err" id="error-message"></div>
             <div class="form-group">
                 <input type="number" class="form-control" id="eventName1" name="passport_number"
-                    placeholder="passport_number" required min="2516100000" max="2516999999">
+                    placeholder="passport_number" required min="1" >
             </div>
             <div class="form-group">
                 <input type="text" class="form-control" id="eventName2" name="last_name" placeholder="last_name"
@@ -62,7 +63,6 @@
                     required>
             </div>
         </div>
-
     </div>
 
     <script>
@@ -103,50 +103,70 @@
             var last_name = $("input[name='last_name']").val();
             var first_name = $("input[name='first_name']").val();
             var patronymic = $("input[name='patronymic']").val();
-
-            // Send an AJAX request to the upd_customers.php script
-            console.log("Updating row with ClientID " + ClientID);
-            $.ajax({
-                url: "./php/upd_customers.php",
-                method: "POST",
-                data: {
-                    ClientID: ClientID,
-                    passport_number: passport_number,
-                    last_name: last_name,
-                    first_name: first_name,
-                    patronymic: patronymic
-                },
-                success: function (response) {
-                    // Reload the table after the row is updated
-                    location.reload();
-                },
-                error: function (xhr, status, error) {
-                    console.error(xhr.responseText);
-                }
-            });
+            // Check correct input
+            if (checkInpt(passport_number, last_name, first_name, patronymic) === true) {
+                // Send an AJAX request to the upd_customers.php script
+                console.log("Updating row with ClientID " + ClientID);
+                $.ajax({
+                    url: "./php/upd_customers.php",
+                    method: "POST",
+                    data: {
+                        ClientID: ClientID,
+                        passport_number: passport_number,
+                        last_name: last_name,
+                        first_name: first_name,
+                        patronymic: patronymic
+                    },
+                    success: function (response) {
+                        // Reload the table after the row is updated
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            } else {
+                $("#error-message").text("Введите корректные значения.")
+            }
         }
 
 
         function insertRow(passport_number, last_name, first_name, patronymic) {
-            // Send an AJAX request to the delete.php script
-            $.ajax({
-                url: "./php/ins_customers.php",
-                method: "POST",
-                data: {
-                    passport_number: passport_number,
-                    last_name: last_name,
-                    first_name: first_name,
-                    patronymic: patronymic
-                },
-                success: function (response) {
-                    // Reload the table after the row is deleted
-                    location.reload();
-                },
-                error: function (xhr, status, error) {
-                    console.error(xhr.responseText);
-                }
-            });
+            // Check correct input
+            if (checkInpt(passport_number, last_name, first_name, patronymic) === true) {
+                // Send an AJAX request to the delete.php script
+                $.ajax({
+                    url: "./php/ins_customers.php",
+                    method: "POST",
+                    data: {
+                        passport_number: passport_number,
+                        last_name: last_name,
+                        first_name: first_name,
+                        patronymic: patronymic
+                    },
+                    success: function (response) {
+                        // Reload the table after the row is deleted
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
         }
+
+        function checkPassportNumber(input) {
+            if (input.value < input.min) input.value = input.min;
+        }
+
+        function checkInpt(passport_number, last_name, first_name, patronymic) {
+            if (passport_number === "" || last_name === "" || first_name === "" || patronymic === "") {
+                return false; // or you could do something else if the input is invalid
+            } else {//добавить других проверок ввода, вроде минимального значения
+                return true; // or you could do something else if the input is valid
+            }
+        }
+
     </script>
 
 </body>
