@@ -25,6 +25,7 @@
                         <th>Coupon ID</th>
                         <th>Type</th>
                         <th>Ticket Price</th>
+                        <th>Direction</th>
                         <th>Action</th>
                         <th>Action</th>
                     </tr>
@@ -37,7 +38,7 @@
         <div class="container">
             <div class="row">
                 <button type="submit" class="btn btn-primary mt-3 custom-btn"
-                    onclick='insertRow($("#couponType").val(), $("#couponPrice").val())'
+                    onclick='insertRow($("#couponType").val(), $("#couponPrice").val(), $("#couponDirection").val())'
                     id="create-coupon-btn">Добавить</button>
             </div>
         </div>
@@ -51,6 +52,10 @@
                 <input type="text" class="form-control" id="couponPrice" name="Ticket Price" placeholder="Ticket Price"
                     required>
             </div>
+            <div class="form-group">
+                <input type="text" class="form-control" id="couponDirection" name="Direction" placeholder="Direction"
+                    required>
+            </div>
         </div>
     </div>
 
@@ -62,7 +67,7 @@
                 dataType: "json",
                 success: function (data) {
                     $.each(data, function (index, item) {
-                        var row = $("<tr><td>" + item.CouponID + "</td><td>" + item.Type + "</td><td>" + item.Ticket_price + "</td><td><button onclick='deleteRow(" + item.CouponID + ")'>Delete</button></td> <td><button onclick='updRow(" + item.CouponID + ")'>Update</button></td></tr>");
+                        var row = $("<tr><td>" + item.CouponID + "</td><td>" + item.Type + "</td><td>" + item.Ticket_price + "</td><td>" + item.direction + "</td><td><button onclick='deleteRow(" + item.CouponID + ")'>Delete</button></td><td><button onclick='updRow(" + item.CouponID + ")'>Update</button></td></tr>");
                         $("#couponTable tbody").append(row);
                     });
 
@@ -92,7 +97,8 @@
         function updRow(couponID) {
             var type = $("input[name='Type']").val();
             var ticket_price = $("input[name='Ticket Price']").val();
-            if (checkInpt(type, ticket_price) === true) {
+            var direction = $("input[name='Direction']").val();
+            if (checkInpt(type, ticket_price, direction) === true) {
                 console.log("Updating row with ID " + couponID);
                 $.ajax({
                     url: "./php/upd_coupons.php",
@@ -100,7 +106,8 @@
                     data: {
                         couponID: couponID,
                         type: type,
-                        ticket_price: ticket_price
+                        ticket_price: ticket_price,
+                        direction: direction
                     },
                     success: function (response) {
                         location.reload();
@@ -114,16 +121,17 @@
             }
         }
 
-        function insertRow(type, ticket_price) {
+        function insertRow(type, ticket_price, direction) {
             // Check correct input
-            if (checkInpt(type, ticket_price)) {
+            if (checkInpt(type, ticket_price, direction)) {
                 // Send an AJAX request to the ins_airline.php script
                 $.ajax({
                     url: "./php/ins_coupons.php",
                     method: "POST",
                     data: {
                         type: type,
-                        ticket_price: ticket_price
+                        ticket_price: ticket_price,
+                        direction: direction,
                     },
                     success: function (response) {
                         // Reload the table after the row is inserted
@@ -138,8 +146,8 @@
             }
         }
 
-        function checkInpt(type, ticket_price) {
-            if (type === "" || isNaN(ticket_price)) {
+        function checkInpt(type, ticket_price, direction) {
+            if (type === "" || isNaN(ticket_price) || direction==="") {
                 return false;
             } else {
                 return true;

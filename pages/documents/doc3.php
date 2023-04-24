@@ -14,22 +14,22 @@
 
 <body>
     <div class="form">
-        
+
 
         <div class="elements">
             <div class="err" id="error-message"></div>
             <div class="form-group">
-                <input type="text" class="form-control" id="airlineId" name="airlineId" placeholder="Дата, на которую нужно отобразить список клиентов авиакомпании">
+                <input type="text" class="form-control" id="airlineId" name="airlineId"
+                    placeholder="Месяц, на который нужно отобразить список клиентов авиакомпании">
             </div>
         </div>
 
         <div class="container">
             <div class="row">
-                <button type="submit" class="btn btn-primary mt-3 custom-btn"
-                    onclick='insertRow($("#airlineId").val()'
+                <button type="submit" class="btn btn-primary mt-3 custom-btn" onclick='insertRow($("#airlineId").val())'
                     id="create-cashier-btn">Показать</button>
             </div>
-        </div> 
+        </div>
 
         <div class="heading-menu">
             <span><strong>Таблица</strong></span>
@@ -39,13 +39,10 @@
             <table id="docTable">
                 <thead>
                     <tr>
-                        <th>CashierID</th>
+                        <th>Airline</th>
                         <th>Surname</th>
                         <th>Name</th>
                         <th>Patronymic</th>
-                        <th>CashID</th>
-                        <th>Action</th>
-                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,93 +52,24 @@
 
 
         <script>
-            $(document).ready(function () {
-                // Load the data from the server and populate the table
-                $.ajax({
-                    url: "./php/select_cashiers_fromDb.php",
-                    dataType: "json",
-                    success: function (data) {
-                        $.each(data, function (index, item) {
-                            var row = $("<tr><td>" + item.CashierID + "</td><td>" + item.Surname + "</td><td>" + item.Name + "</td><td>" + item.Patronymic + "</td><td>" + item.CashID + "</td><td><button onclick='deleteRow(" + item.CashierID + ")'>Delete</button></td> <td><button onclick='updRow(" + item.CashierID + ")'>Update</button></td></tr>");
-                            $("#docTable tbody").append(row);
-                        });
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(xhr.responseText);
-                    }
-                });
-            });
-
-
-            function deleteRow(cashierID) {
-                // Send an AJAX request to the del_cashier.php script
-                $.ajax({
-                    url: "./php/del_cashiers.php",
-                    method: "POST",
-                    data: { cashierID: cashierID },
-                    success: function (response) {
-                        // Reload the table after the row is deleted
-                        location.reload();
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(xhr.responseText);
-                    }
-                });
-            }
-
-
-            function updCashier(cashierID) {
-                var newSalary = $("input[name='new_salary']").val();
-                if (checkInpt(newSalary) === true) {
-                    console.log("Updating cashier with ID " + cashierID);
-                    $.ajax({
-                        url: "./php/upd_cashiers.php",
-                        method: "POST",
-                        data: {
-                            cashierID: cashierID,
-                            newSalary: newSalary
-                        },
-                        success: function (response) {
-                            // Reload the table after the row is inserted
-                            if (response.startsWith("Error inserting record:")) {
-                                $("#error-message").text("Введенный CashID не существует в cash table");
-                            } else {
-                                // Reload the table after the row is inserted
-                                location.reload();
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error(xhr.responseText);
-                        }
-                    });
-                } else {
-                    $("#error-message").text("Введите корректную зарплату.");
-                }
-            }
-
-
-            function insertRow(surname, name, patronymic, cashID) {
+            function insertRow(date_of_sale) {
                 // Check correct input
-                if (checkInpt(surname, name, cashID)) {
-                    // Send an AJAX request to the ins_cashier.php script
+                if (checkInpt(date_of_sale)) {
+                    // Send an AJAX request to the select_doc3_fromDb.php script
                     $.ajax({
-                        url: "./php/ins_cashiers.php",
+                        url: "./php/select_doc3_fromDb.php",
                         method: "POST",
                         data: {
-                            surname: surname,
-                            name: name,
-                            patronymic: patronymic,
-                            cashID: cashID
+                            date_of_sale: date_of_sale,
                         },
                         success: function (response) {
-                            // Reload the table after the row is inserted
-                            if (response.startsWith("Error inserting record:")) {
-                                $("#error-message").text("Введенный CashID не существует в cash table");
-                            } else {
-                                // Reload the table after the row is inserted
-                                location.reload();
-                            }
+                            $("#docTable tbody").empty();
+                            $.each(response, function (index, item) {
+                                var row = $("<tr><td>" + item.Airline + "</td><td>" + item.last_name + "</td><td>" + item.first_name + "</td><td>" + item.patronymic + "</td></tr>");
+                                $("#docTable tbody").append(row);
+                            });
                         },
+
                         error: function (xhr, status, error) {
                             console.error(xhr.responseText);
                         }
@@ -154,8 +82,9 @@
 
 
 
-            function checkInpt(surname, name, cashID) {
-                if (surname === "" || name === "" || cashID === "") {
+
+            function checkInpt(date_of_sale) {
+                if (date_of_sale === "" || date_of_sale > 12 || date_of_sale < 1) {
                     return false;
                 } else {
                     return true;
@@ -168,3 +97,5 @@
 </body>
 
 </html>
+
+

@@ -10,15 +10,26 @@ if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
-// Get the Cashier ID from the request
-$cashierID = $_POST['cashierID'];
+// Get the Cashier data from the request
 $surname = $_POST['surname'];
 $name = $_POST['name'];
 $patronymic = $_POST['patronymic'];
 $cashID = $_POST['cashID'];
+$cashierID = $_POST['cashierID'];
 
-// Prepare the update statement
-$sql = "UPDATE Cashier SET Surname = '$surname', Name = '$name', Patronymic = '$patronymic', CashID = '$cashID' WHERE CashierID = $cashierID";
+// Check if CashID already exists in the Cash table
+$checkSql = "SELECT CashID FROM Cash WHERE CashID = '$cashID'";
+$checkResult = mysqli_query($conn, $checkSql);
+
+$sql = ""; 
+if (mysqli_num_rows($checkResult) > 0) {
+    // CashID already exists, display error message and exit script
+    $sql = "UPDATE Cashier SET Surname = '$surname', Name = '$name', Patronymic = '$patronymic', CashID = '$cashID' WHERE CashierID = $cashierID";
+   
+} else {
+    // Prepare the update statement
+    echo "Error updating record: this CashID don't exists in the Cash table";
+}
 
 // Execute the statement
 if (mysqli_query($conn, $sql)) {

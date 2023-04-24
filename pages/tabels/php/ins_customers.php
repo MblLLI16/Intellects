@@ -16,8 +16,18 @@ $last_name = $_POST['last_name'];
 $first_name = $_POST['first_name'];
 $patronymic = $_POST['patronymic'];
 
-// Prepare the insert statement
-$sql = "INSERT INTO Client (passport_number, last_name, first_name, patronymic) VALUES ('$passport_number', '$last_name', '$first_name', '$patronymic')";
+$checkSql1 = "SELECT passport_number FROM Client WHERE passport_number = '$passport_number'";
+$checkResult1 = mysqli_query($conn, $checkSql1);
+
+$sql = ""; 
+if (mysqli_num_rows($checkResult1) > 0) {
+    // Passport number, companyID, cashierID, and ticketID all exist, insert a new record into the BuyTicket table
+    echo "Error inserting record: One or more of the required values alredy exist in their respective table";
+} else {
+    // Prepare the insert statement
+    $sql = "INSERT INTO Client (passport_number, last_name, first_name, patronymic) VALUES ('$passport_number', '$last_name', '$first_name', '$patronymic')";
+}
+
 
 // Execute the statement
 if (mysqli_query($conn, $sql)) {

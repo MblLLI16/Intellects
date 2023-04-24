@@ -13,9 +13,10 @@ if (!$conn) {
 // Get the form data
 $type = $_POST['type'];
 $ticket_price = $_POST['ticket_price'];
+$direction = $_POST['direction'];
 
 // Prepare the insert statement
-$sql = "INSERT INTO Coupon (Type, Ticket_price) VALUES ('$type', '$ticket_price')";
+$sql = "INSERT INTO Coupon (Type, Ticket_price, Direction) VALUES ('$type', '$ticket_price', '$direction')";
 
 // Execute the statement
 if (mysqli_query($conn, $sql)) {

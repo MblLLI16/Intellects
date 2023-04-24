@@ -56,7 +56,7 @@
                 <input type="text" class="form-control" id="patronymic" name="patronymic" placeholder="Отчество">
             </div>
             <div class="form-group">
-                <input type="number" class="form-control" id="cashID" name="cash_id" placeholder="Cash ID">
+                <input type="number" class="form-control" id="cashID" name="cashID" placeholder="Cash ID">
             </div>
         </div>
 
@@ -99,20 +99,26 @@
             }
 
 
-            function updCashier(cashierID) {
-                var newSalary = $("input[name='new_salary']").val();
-                if (checkInpt(newSalary) === true) {
+            function updRow(cashierID) {
+                var surname = $("#surname").val();
+                var name = $("#name").val();
+                var patronymic = $("#patronymic").val();
+                var cashID = $("#cashID").val();
+                if (checkInpt(surname,name,cashID) === true) {
                     console.log("Updating cashier with ID " + cashierID);
                     $.ajax({
                         url: "./php/upd_cashiers.php",
                         method: "POST",
                         data: {
                             cashierID: cashierID,
-                            newSalary: newSalary
+                            surname: surname,
+                            name: name,
+                            patronymic: patronymic,
+                            cashID: cashID
                         },
                         success: function (response) {
                             // Reload the table after the row is inserted
-                            if (response.startsWith("Error inserting record:")) {
+                            if (response.startsWith("Error updating record:")) {
                                 $("#error-message").text("Введенный CashID не существует в cash table");
                             } else {
                                 // Reload the table after the row is inserted
@@ -124,7 +130,7 @@
                         }
                     });
                 } else {
-                    $("#error-message").text("Введите корректную зарплату.");
+                    $("#error-message").text("Введите корректные значения.");
                 }
             }
 

@@ -22,7 +22,7 @@
             <table id="customersTable">
                 <thead>
                     <tr>
-                        <th>Client ID</th>
+                        <!-- <th>Client ID</th> -->
                         <th>Passport Number</th>
                         <th>Last Name</th>
                         <th>First Name</th>
@@ -73,8 +73,8 @@
                 dataType: "json",
                 success: function (data) {
                     $.each(data, function (index, item) {
-                        var row = $("<tr><td>" + item.ClientID + "</td><td>" + item.passport_number + "</td><td>" + item.last_name + "</td><td>" + item.first_name + "</td><td>" + item.patronymic + "</td><td><button onclick='deleteRow(" + item.ClientID + ")'>Delete</button></td> <td><button onclick='updRow(" + item.ClientID + ")'>Update</button></td></tr>");
-                        $("#customersTable tbody").append(row);
+                        var row = $("<tr><td>"  + item.passport_number + "</td><td>" + item.last_name + "</td><td>" + item.first_name + "</td><td>" + item.patronymic + "</td><td><button onclick='deleteRow(" + item.ClientID + ")'>Delete</button></td> <td><button onclick='updRow(" + item.ClientID + ")'>Update</button></td></tr>");
+                        $("#customersTable tbody").append(row);//+ item.ClientID + "</td><td>"
                     });
                 },
                 error: function (xhr, status, error) {
@@ -145,8 +145,11 @@
                         patronymic: patronymic
                     },
                     success: function (response) {
-                        // Reload the table after the row is deleted
-                        location.reload();
+                        if (response.startsWith("Error inserting record:")) {
+                                $("#error-message").text("Такой номер паспорта уже существует, должно быть уникальное значение");
+                            } else {
+                                location.reload();
+                            }
                     },
                     error: function (xhr, status, error) {
                         console.error(xhr.responseText);

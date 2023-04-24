@@ -14,9 +14,10 @@ if (!$conn) {
 $couponID = $_POST['couponID'];
 $type = $_POST['type'];
 $ticketPrice = $_POST['ticket_price'];
+$direction = $_POST['direction'];
 
 // Prepare the update statement
-$sql = "UPDATE Coupon SET Type = '$type', Ticket_price = '$ticketPrice' WHERE CouponID = $couponID";
+$sql = "UPDATE Coupon SET Type = '$type', Ticket_price = '$ticketPrice', Direction = '$direction' WHERE CouponID = $couponID";
 
 // Execute the statement
 if (mysqli_query($conn, $sql)) {

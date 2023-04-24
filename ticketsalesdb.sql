@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Апр 18 2023 г., 03:22
+-- Время создания: Апр 24 2023 г., 02:55
 -- Версия сервера: 10.4.27-MariaDB
 -- Версия PHP: 8.2.0
 
@@ -40,7 +40,33 @@ CREATE TABLE `airline` (
 INSERT INTO `airline` (`ID`, `Name`, `Address`) VALUES
 (1, 'Delta Airlines', 'Atlanta, GA'),
 (2, 'United Airlines', 'Chicago, IL'),
-(3, 'American Airlines', 'Fort Worth, TX');
+(3, 'American Airlines', 'Fort Worth, TX'),
+(5, 'Аэрофлот', 'Москва');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `buyticket`
+--
+
+CREATE TABLE `buyticket` (
+  `BuyTicketID` int(11) NOT NULL,
+  `Pass_number` bigint(20) NOT NULL,
+  `CompanyID` int(11) NOT NULL,
+  `CashierID` int(11) NOT NULL,
+  `TicketID` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Дамп данных таблицы `buyticket`
+--
+
+INSERT INTO `buyticket` (`BuyTicketID`, `Pass_number`, `CompanyID`, `CashierID`, `TicketID`) VALUES
+(1, 2147483647, 2, 1, 1),
+(2, 2147483647, 1, 1, 1),
+(3, 2147483647, 1, 1, 2),
+(4, 2147483648, 3, 1, 1),
+(5, 2147483648, 3, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -61,7 +87,7 @@ CREATE TABLE `cash` (
 INSERT INTO `cash` (`CashID`, `Address`, `Cash_number`) VALUES
 (1, '123 Main St.', 100),
 (2, '456 Broad St.', 200),
-(3, '789 Park Ave.', 300);
+(3, 'Test', 2);
 
 -- --------------------------------------------------------
 
@@ -77,6 +103,15 @@ CREATE TABLE `cashier` (
   `CashID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Дамп данных таблицы `cashier`
+--
+
+INSERT INTO `cashier` (`CashierID`, `Surname`, `Name`, `Patronymic`, `CashID`) VALUES
+(1, 'Иванов', 'Иван', 'Иванович', 1),
+(3, 'dfg', 'dfg', 'dfg', 2),
+(4, 'sdf', 'sdf', 'sdf', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -84,8 +119,7 @@ CREATE TABLE `cashier` (
 --
 
 CREATE TABLE `client` (
-  `ClientID` int(11) NOT NULL,
-  `passport_number` int(10) NOT NULL,
+  `passport_number` bigint(10) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `first_name` varchar(50) NOT NULL,
   `patronymic` varchar(50) NOT NULL
@@ -95,12 +129,9 @@ CREATE TABLE `client` (
 -- Дамп данных таблицы `client`
 --
 
-INSERT INTO `client` (`ClientID`, `passport_number`, `last_name`, `first_name`, `patronymic`) VALUES
-(2, 2147483647, 'Smith', 'Jane', 'Marie'),
-(3, 2147483647, 'Johnson', 'David', 'Michael'),
-(5, 0, 'Doe', 'Smith', 'Michael'),
-(13, 22, 's', 's', 's'),
-(16, 3453, 'вапвап', 'вапв', 'вап');
+INSERT INTO `client` (`passport_number`, `last_name`, `first_name`, `patronymic`) VALUES
+(2147483647, 'Johnson', 'David', 'Michael'),
+(2147483648, 'Smith', 'Jane', 'Marie');
 
 -- --------------------------------------------------------
 
@@ -111,17 +142,19 @@ INSERT INTO `client` (`ClientID`, `passport_number`, `last_name`, `first_name`, 
 CREATE TABLE `coupon` (
   `CouponID` int(11) NOT NULL,
   `Type` varchar(255) NOT NULL,
-  `Ticket_price` float NOT NULL
+  `Ticket_price` float NOT NULL,
+  `direction` varchar(70) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Дамп данных таблицы `coupon`
 --
 
-INSERT INTO `coupon` (`CouponID`, `Type`, `Ticket_price`) VALUES
-(1, 'Student Discount', 10.5),
-(2, 'Discount', 15),
-(3, 'Regular', 20);
+INSERT INTO `coupon` (`CouponID`, `Type`, `Ticket_price`, `direction`) VALUES
+(1, 'Student Discount', 10.5, 'moscow-paris'),
+(2, 'Discount', 15, 'moscow-paris'),
+(3, 'Regular', 20, 'moscow-paris'),
+(4, 'Test', 3, 'moscow-paris');
 
 -- --------------------------------------------------------
 
@@ -176,6 +209,16 @@ ALTER TABLE `airline`
   ADD PRIMARY KEY (`ID`);
 
 --
+-- Индексы таблицы `buyticket`
+--
+ALTER TABLE `buyticket`
+  ADD PRIMARY KEY (`BuyTicketID`),
+  ADD KEY `Pass_number` (`Pass_number`),
+  ADD KEY `CompanyID` (`CompanyID`),
+  ADD KEY `CashierID` (`CashierID`),
+  ADD KEY `TicketID` (`TicketID`);
+
+--
 -- Индексы таблицы `cash`
 --
 ALTER TABLE `cash`
@@ -192,7 +235,7 @@ ALTER TABLE `cashier`
 -- Индексы таблицы `client`
 --
 ALTER TABLE `client`
-  ADD PRIMARY KEY (`ClientID`);
+  ADD PRIMARY KEY (`passport_number`);
 
 --
 -- Индексы таблицы `coupon`
@@ -221,31 +264,31 @@ ALTER TABLE `ticket`
 -- AUTO_INCREMENT для таблицы `airline`
 --
 ALTER TABLE `airline`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT для таблицы `buyticket`
+--
+ALTER TABLE `buyticket`
+  MODIFY `BuyTicketID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT для таблицы `cash`
 --
 ALTER TABLE `cash`
-  MODIFY `CashID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `CashID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT для таблицы `cashier`
 --
 ALTER TABLE `cashier`
-  MODIFY `CashierID` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT для таблицы `client`
---
-ALTER TABLE `client`
-  MODIFY `ClientID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `CashierID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT для таблицы `coupon`
 --
 ALTER TABLE `coupon`
-  MODIFY `CouponID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `CouponID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT для таблицы `logintable`
@@ -257,11 +300,20 @@ ALTER TABLE `logintable`
 -- AUTO_INCREMENT для таблицы `ticket`
 --
 ALTER TABLE `ticket`
-  MODIFY `Ticket_code` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `Ticket_code` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
 --
+
+--
+-- Ограничения внешнего ключа таблицы `buyticket`
+--
+ALTER TABLE `buyticket`
+  ADD CONSTRAINT `buyticket_ibfk_1` FOREIGN KEY (`Pass_number`) REFERENCES `client` (`passport_number`),
+  ADD CONSTRAINT `buyticket_ibfk_2` FOREIGN KEY (`CompanyID`) REFERENCES `airline` (`ID`),
+  ADD CONSTRAINT `buyticket_ibfk_3` FOREIGN KEY (`CashierID`) REFERENCES `cashier` (`CashierID`),
+  ADD CONSTRAINT `buyticket_ibfk_4` FOREIGN KEY (`TicketID`) REFERENCES `ticket` (`Ticket_code`);
 
 --
 -- Ограничения внешнего ключа таблицы `cashier`

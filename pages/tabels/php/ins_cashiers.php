@@ -14,10 +14,11 @@ if (!$conn) {
 $surname = $_POST['surname'];
 $name = $_POST['name'];
 $patronymic = $_POST['patronymic'];
-$cashID = $_POST['cash_id'];
+$cashID = $_POST['cashID'];
 
 // Check if  does not exists in the  table
 $checkSql = "SELECT CashID FROM Cash WHERE CashID  = '$cashID'";
+$checkResult = mysqli_query($conn, $checkSql);
 if (mysqli_num_rows($checkResult) > 0) {
     // CashID already exists, display error message
     $sql = "INSERT INTO Cashier (Surname, Name, Patronymic, CashID) VALUES ('$surname', '$name', '$patronymic', '$cashID')";
